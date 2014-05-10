@@ -2,6 +2,9 @@
 
 require 'rubygems'
 require 'bundler'
+require 'rake'
+require './lib/kitten_mittens'
+
 begin
   Bundler.setup(:default)
 rescue Bundler::BundlerError => e
@@ -9,11 +12,10 @@ rescue Bundler::BundlerError => e
   $stderr.puts "Run `bundle install` to install missing gems"
   exit e.status_code
 end
-require 'rake'
-require 'rspec/core'
-require 'rspec/core/rake_task'
-RSpec::Core::RakeTask.new(:spec) do |spec|
-  spec.pattern = FileList['spec/**/*_spec.rb']
-end
 
-task :default => :spec
+task :default => :run
+
+desc 'Run a loop'
+task :run do
+  KittenMittens.run
+end
