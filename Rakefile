@@ -15,7 +15,14 @@ end
 
 task :default => :run
 
-desc 'Run a loop'
-task :run do
-  KittenMittens.run
+desc 'Take a snap'
+task :snap do
+  km = KittenMittens.new
+  km.snap
+end
+
+desc 'Analyze for motion'
+task :analyze do
+  km = KittenMittens.new
+  km.analyze_all
 end
