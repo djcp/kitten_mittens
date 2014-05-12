@@ -1,15 +1,17 @@
 require 'fileutils'
 require 'cocaine'
 require './lib/kitten_mittens/db'
+require './lib/kitten_mittens/snap_command_finder'
 require 'similar_text'
 
 class KittenMittens
-  attr_reader :db
+  attr_reader :db, :snap_command
   STREAMER = %w|streamer -s 1280x1024 -c /dev/video0 -b 128 -o|
   PIXEL_MATRIX_COMMAND = %w(| convert -scale 24x -depth 3 - text:)
 
   def initialize
     @db = DB.new
+    @snap_command = SnapCommandFinder.find
   end
 
   def analyze_all
@@ -35,7 +37,7 @@ class KittenMittens
     file_name = "./images/#{Time.now.to_i}.jpeg"
     FileUtils.mkdir_p('./images')
     begin
-      Cocaine::CommandLine.new([STREAMER, file_name].flatten).run
+      Cocaine::CommandLine.new([snap_command, file_name].flatten).run
       db.insert_snap(file_name)
     rescue Cocaine::ExitStatusError => e
       $stderr.puts e.inspect

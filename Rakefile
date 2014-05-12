@@ -15,10 +15,14 @@ end
 
 task :default => :run
 
-desc 'Take a snap'
-task :snap do
+desc 'Take pictures 5 seconds apart'
+task :watch do
   km = KittenMittens.new
-  km.snap
+  while true do
+    km.snap
+    print '.'
+    sleep 5
+  end
 end
 
 desc 'Analyze for motion'
