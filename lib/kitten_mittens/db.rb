@@ -15,8 +15,19 @@ class KittenMittens
       @db.results_as_hash = true
     end
 
+    def close
+      db.close
+    end
+
     def to_analyze
       db.execute('SELECT rowid, * FROM snaps where analyzed_at is null')
+    end
+
+    def with_similarity_more_than(similarity)
+      db.execute(
+        'SELECT rowid, * FROM snaps where similarity is not null and similarity > ?',
+        similarity
+      )
     end
 
     def get_previous_snap(rowid)
@@ -26,11 +37,19 @@ class KittenMittens
       )
     end
 
-    def update_delta(rowid, delta)
+    def update_similarity(rowid, similarity)
       db.execute(
-        'UPDATE snaps set delta = ?, analyzed_at = datetime("now") where  rowid = ?',
-        delta, rowid
+        'UPDATE snaps set similarity = ?, analyzed_at = datetime("now") where  rowid = ?',
+        similarity, rowid
       )
+    end
+
+    def delete_snap(rowid)
+      db.execute('delete from snaps where rowid = ?', rowid)
+    end
+
+    def delete_all_snaps
+      db.execute('delete from snaps')
     end
 
     def update_matrix(rowid, pixel_matrix)
@@ -56,7 +75,7 @@ class KittenMittens
         'CREATE TABLE snaps(
           file_name TEXT,
           pixel_matrix TEXT,
-          delta text,
+          similarity text,
           created_at datetime,
           analyzed_at datetime
         )'

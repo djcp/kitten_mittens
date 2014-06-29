@@ -9,7 +9,6 @@ class KittenMittens
 
     def self.find
       best = COMMANDS.find do |command|
-        puts command[:base]
         Cocaine::CommandLine.new(
           ['bash', '-c', 'command', '-v', command[:base]]
         ).run
