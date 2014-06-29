@@ -19,6 +19,9 @@ def with_interrupt_trapping_for(km)
   begin
     yield
   rescue SystemExit, Interrupt
+    puts ' Analyzing images before exiting '
+    km.analyze_all
+    km.remove_similar_images
     km.db.close
     puts 'Exiting'
     exit
@@ -49,6 +52,7 @@ task :watch_and_analyze_all do
       km.snap
       print '.'
       if count % 50 == 0
+        print ' Analyzing '
         km.analyze_all
         km.remove_similar_images
       else
